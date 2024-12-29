@@ -23,8 +23,8 @@ class PID:
         y_acc = self.Kp[1] * e_p[1] + self.Ki[1] * self.e_i[1] + self.Kd[1] * e_d[1]
         z_acc = self.Kp[2] * e_p[2] + self.Ki[2] * self.e_i[2] + self.Kd[2] * e_d[2]
         acc = np.array([x_acc, y_acc, z_acc])
+
+        # Thrust required
+        T = params["mass"] * (params["gravity"] + acc[2])
         
-        # Force required
-        F = params["mass"] * (params["gravity"] + acc[2])
-        
-        return F, acc
+        return T, acc
