@@ -39,3 +39,7 @@ def rot2quat(R):
         q3 = 0.25 * S
 
     return np.array([q0, q1, q2, q3])
+
+def conjugate(q):
+
+    return np.array([q[0], -q[1], -q[2], -q[3]])
