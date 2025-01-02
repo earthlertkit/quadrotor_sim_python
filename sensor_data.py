@@ -21,3 +21,6 @@ class Gyroscope:
 
         # Update
         self.omega = solution.y[:, -1]
+
+    def get_sensor_data(self):
+        return self.omega
