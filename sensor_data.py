@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 import dynamics
+import quaternion_math as qt
 
 class Gyroscope:
     def __init__(self, omega_init, measurement_rate):
@@ -24,3 +25,22 @@ class Gyroscope:
 
     def get_sensor_data(self):
         return self.omega
+    
+    
+class Accelerometer:
+    def __init__(self, acc_init):
+        self.acc = acc_init
+
+    def update(self, state_curent, acc_n):
+        # Currently using desired acceleration straight from position controller
+        # Need to update to use thrust produced from motor dynamics instead
+
+        # Converting desired acceleration from inertial to body frame
+        R = qt.rot2quat(state_curent[0:4])
+        acc_b = R @ acc_n
+
+        # Update
+        self.acc = acc_b
+
+    def get_sensor_data(self):
+        return self.acc
