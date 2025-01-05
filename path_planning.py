@@ -1,21 +1,7 @@
 import numpy as np
 
-def waypoint_discretize(dt):
-
-    # Waypoints in the format of [x position, y position, z position, psi heading]
-    waypoints = np.array(
-                        [[0, 0, 0, 0],
-                         [0, 0, 10, 0],
-                         [10, 0, 10, 0],
-                         [10, 10, 10, 0],
-                         [0, 10, 10, 0],
-                         [0, 0, 10, 0],
-                         [0, 0, 5, 0]]
-                        ).T
+def waypoint_discretize(waypoints, waypoint_times, dt):
     
-    # Time to reach each waypoint
-    waypoint_times = np.array([0, 5, 10, 15, 20, 25, 30])
-
     # Discretizing waypoints
     current_waypoint = 0
     path = np.zeros((16, int(waypoint_times[-1]/dt)+1))
