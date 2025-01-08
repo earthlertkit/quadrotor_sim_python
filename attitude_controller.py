@@ -8,14 +8,14 @@ class P2:
         self.Kq = Kq
         self.Kw = Kw 
 
-    def control(self, state_current, state_desired, dt, params, acc, gyroscope):
+    def control(self, state_current, state_desired, params, acc, omega):
         # Quaternion error
         q_desired = self.desired_quaternions(state_desired, params, acc)
         q_current = state_current[0:4]
         q_error = qt.multiply(q_desired, qt.conjugate(q_current))[1:4]
 
         # Required torque
-        torque = self.Kq * q_error + self.Kw * gyroscope.get_sensor_data()
+        torque = self.Kq * q_error + self.Kw * omega
 
         return torque
 

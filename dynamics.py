@@ -21,7 +21,7 @@ def quadrotor_dynamics(t, x, omega, acc, params):
     r_dot = v
 
     # Velocities
-    v_dot = qt.rot2quat(q).T @ acc + params["gravity"]
+    v_dot = qt.quat2rot(q).T @ acc + params["gravity"]
 
     # Accelerometer biases
     b_a_dot = np.zeros(3)
@@ -30,4 +30,4 @@ def quadrotor_dynamics(t, x, omega, acc, params):
     # Gyroscope biases
     b_w_dot = np.zeros(3)
 
-    return np.row_stack((q_dot, r_dot, v_dot, b_a_dot, b_w_dot))
+    return np.concatenate((q_dot, r_dot, v_dot, b_a_dot, b_w_dot))
