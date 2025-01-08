@@ -48,9 +48,19 @@ def run_simulation():
     waypoint_times = np.array([0, 5, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
+    # Plotting variables
+    time = []
+    z_pos = []
+    z_pos_des = []
+
     # Control loop
     for i in range(path_desired.shape[1]):
         
+        # Plotting
+        time.append(i*dt)
+        z_pos.append(state_current[6])
+        z_pos_des.append(path_desired[6, i])
+
         # Get sensor data
         acc_IMU = accelerometer.get_sensor_data()
         omega_IMU = gyroscope.get_sensor_data()
@@ -82,6 +92,11 @@ def run_simulation():
         # Update sensors
         gyroscope.update(torque_req, quadrotor_params)
         accelerometer.update(state_current, acc_req)
+
+    plt.plot(time, z_pos, label="actual")
+    plt.plot(time, z_pos_des, label="desired")
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     run_simulation()
