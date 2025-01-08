@@ -36,7 +36,7 @@ class Accelerometer:
         # Need to update to use thrust produced from motor dynamics instead
 
         # Converting desired acceleration from inertial to body frame
-        R = qt.rot2quat(state_curent[0:4])
+        R = qt.quat2rot(state_curent[0:4])
         acc_b = R @ acc_n
 
         # Update

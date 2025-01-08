@@ -20,7 +20,8 @@ def run_simulation():
     # Quadrotor parameters
     quadrotor_params = {
         "mass": 1.0,
-        "gravity": np.array([0, 0, -9.81])
+        "gravity": np.array([0, 0, -9.81]),
+        "moment_of_inertia": np.eye(3)
     }
 
     # Sensor parameters
@@ -78,6 +79,9 @@ def run_simulation():
         )
         state_current = solution.y[:, -1]
 
+        # Update sensors
+        gyroscope.update(torque_req, quadrotor_params)
+        accelerometer.update(state_current, acc_req)
 
 if __name__ == "__main__":
     run_simulation()

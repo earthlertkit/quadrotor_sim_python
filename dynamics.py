@@ -2,7 +2,7 @@ import numpy as np
 import quaternion_math as qt
 
 def rotational_dynamics(t, omega, torque, params):
-    I = params["MomentOfInertia"]
+    I = params["moment_of_inertia"]
     omega_dot = np.linalg.solve(I, torque - np.cross(omega, I @ omega))
 
     return omega_dot
