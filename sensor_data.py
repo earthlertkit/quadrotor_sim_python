@@ -31,13 +31,13 @@ class Accelerometer:
     def __init__(self, acc_init):
         self.acc = acc_init
 
-    def update(self, state_curent, acc_n):
+    def update(self, state_curent, acc_n, params):
         # Currently using desired acceleration straight from position controller
         # Need to update to use thrust produced from motor dynamics instead
 
         # Converting desired acceleration from inertial to body frame
         R = qt.quat2rot(state_curent[0:4])
-        acc_b = R @ acc_n
+        acc_b = R @ (acc_n - params["gravity"])
 
         # Update
         self.acc = acc_b

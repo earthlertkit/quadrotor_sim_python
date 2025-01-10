@@ -27,11 +27,11 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters
-    Kp = np.array([1, 1, 1])
-    Ki = np.array([1, 1, 1])
-    Kd = np.array([1, 1, 1])
-    Kq = 1
-    Kw = 1
+    Kp = np.array([0, 0, 1])
+    Ki = np.array([0, 0, 0])
+    Kd = np.array([0, 0, 1])
+    Kq = 0
+    Kw = 0
 
     # Initializing sensors
     accelerometer = sensor_data.Accelerometer(np.array([0, 0, 0]))
@@ -91,7 +91,7 @@ def run_simulation():
 
         # Update sensors
         gyroscope.update(torque_req, quadrotor_params)
-        accelerometer.update(state_current, acc_req)
+        accelerometer.update(state_current, acc_req, quadrotor_params)
 
     plt.plot(time, z_pos, label="actual")
     plt.plot(time, z_pos_des, label="desired")
