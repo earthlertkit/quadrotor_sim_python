@@ -27,9 +27,9 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters
-    Kp = np.array([0, 0, 5])
+    Kp = np.array([5, 5, 5])
     Ki = np.array([0, 0, 0])
-    Kd = np.array([0, 0, 4])
+    Kd = np.array([4, 4, 4])
     Kq = 0
     Kw = 0
 
@@ -44,8 +44,11 @@ def run_simulation():
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
                          [0, 0, 10, 0],
+                         [10, 0, 10, 0],
+                         [10, 10, 10, 0],
+                         [10, 10, 10, np.pi],
                          [0, 0, 0, 0]]).T
-    waypoint_times = np.array([0, 5, 10])
+    waypoint_times = np.array([0, 5, 10, 15, 20, 25])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
     # Plotting variables
@@ -93,9 +96,24 @@ def run_simulation():
         gyroscope.update(torque_req, quadrotor_params)
         accelerometer.update(state_current, acc_req, quadrotor_params)
 
-    plt.plot(time, state_current_plot[6, :], label="actual")
-    plt.plot(time, state_desired_plot[6, :], label="desired")
-    plt.legend()
+    # Outputting position plots
+    fig, ax = plt.subplots(3, 1)
+
+    ax[0].plot(time, state_current_plot[4, :], label='Actual')
+    ax[0].plot(time, state_desired_plot[4, :], label='Desired')
+    ax[0].set_title("x")
+    ax[0].legend()
+
+    ax[1].plot(time, state_current_plot[5, :], label='Actual')
+    ax[1].plot(time, state_desired_plot[5, :], label='Desired')
+    ax[1].set_title("y")
+    ax[1].legend()
+
+    ax[2].plot(time, state_current_plot[6, :], label='Actual')
+    ax[2].plot(time, state_desired_plot[6, :], label='Desired')
+    ax[2].set_title("x")
+    ax[2].legend()
+
     plt.show()
 
 if __name__ == "__main__":
