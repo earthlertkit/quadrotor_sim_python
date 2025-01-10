@@ -17,7 +17,11 @@ class P2:
         # Required torque
         torque = self.Kq * q_error + self.Kw * omega
 
-        return torque
+        # New desired state with updated attitudes
+        state_desired_new = state_desired.copy()
+        state_desired_new[0:4] = q_desired
+
+        return torque, state_desired_new
 
     def desired_quaternions(self, state_desired, params, acc):
         # Desired z-axis (unit thrust vector)

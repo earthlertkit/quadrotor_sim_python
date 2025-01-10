@@ -50,16 +50,11 @@ def run_simulation():
 
     # Plotting variables
     time = []
-    z_pos = []
-    z_pos_des = []
+    state_current_plot = np.zeros((16, path_desired.shape[1]))
+    state_desired_plot = np.zeros((16, path_desired.shape[1]))
 
     # Control loop
     for i in range(path_desired.shape[1]):
-        
-        # Plotting
-        time.append(i*dt)
-        z_pos.append(state_current[6])
-        z_pos_des.append(path_desired[6, i])
 
         # Get sensor data
         acc_IMU = accelerometer.get_sensor_data()
@@ -72,12 +67,17 @@ def run_simulation():
                                                      params=quadrotor_params)
 
         # Attitude controller
-        torque_req = att_controller.control(state_current=state_current,
+        torque_req, state_desired = att_controller.control(state_current=state_current,
                                             state_desired=path_desired[:, i],
                                             params=quadrotor_params,
                                             acc=acc_req,
                                             omega=omega_IMU)
         
+        # Plotting
+        time.append(i*dt)
+        state_current_plot[:, i] = state_current
+        state_desired_plot[:, i] = state_desired
+
         # Simulating dynamics
         solution = solve_ivp(
             dynamics.quadrotor_dynamics,
@@ -93,8 +93,8 @@ def run_simulation():
         gyroscope.update(torque_req, quadrotor_params)
         accelerometer.update(state_current, acc_req, quadrotor_params)
 
-    plt.plot(time, z_pos, label="actual")
-    plt.plot(time, z_pos_des, label="desired")
+    plt.plot(time, state_current_plot[6, :], label="actual")
+    plt.plot(time, state_desired_plot[6, :], label="desired")
     plt.legend()
     plt.show()
 
