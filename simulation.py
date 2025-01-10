@@ -27,9 +27,9 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters
-    Kp = np.array([0, 0, 1])
+    Kp = np.array([0, 0, 5])
     Ki = np.array([0, 0, 0])
-    Kd = np.array([0, 0, 1])
+    Kd = np.array([0, 0, 4])
     Kq = 0
     Kw = 0
 
