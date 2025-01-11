@@ -13,6 +13,7 @@ def run_simulation():
 
     # Initial Condition
     state_current = np.zeros(16)
+    state_current[0] = 1
 
     # Simulation parameters
     dt = 0.01
@@ -27,14 +28,14 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters
-    Kp = np.array([5, 5, 5])
+    Kp = np.array([1, 1, 1])
     Ki = np.array([0, 0, 0])
-    Kd = np.array([4, 4, 4])
+    Kd = np.array([1, 1, 1])
     Kq = 0
     Kw = 0
 
     # Initializing sensors
-    accelerometer = sensor_data.Accelerometer(np.array([0, 0, 0]))
+    accelerometer = sensor_data.Accelerometer(-quadrotor_params["gravity"])
     gyroscope = sensor_data.Gyroscope(np.array([0, 0, 0]), dt)
 
     # Initializing controllers
@@ -58,7 +59,7 @@ def run_simulation():
 
     # Control loop
     for i in range(path_desired.shape[1]):
-
+        print(i)
         # Get sensor data
         acc_IMU = accelerometer.get_sensor_data()
         omega_IMU = gyroscope.get_sensor_data()
@@ -80,7 +81,7 @@ def run_simulation():
         time.append(i*dt)
         state_current_plot[:, i] = state_current
         state_desired_plot[:, i] = state_desired
-
+        
         # Simulating dynamics
         solution = solve_ivp(
             dynamics.quadrotor_dynamics,
@@ -91,10 +92,29 @@ def run_simulation():
             method="RK45"
         )
         state_current = solution.y[:, -1]
+        state_current[0:4] /= np.linalg.norm(state_current[0:4])
 
         # Update sensors
         gyroscope.update(torque_req, quadrotor_params)
-        accelerometer.update(state_current, acc_req, quadrotor_params)
+        accelerometer.update(state_current, thrust_req, quadrotor_params)
+
+    # Outputting orientation plots
+    fig, ax = plt.subplots(3, 1)
+
+    ax[0].plot(time, state_current_plot[1, :], label='Actual')
+    ax[0].plot(time, state_desired_plot[1, :], label='Desired')
+    ax[0].set_title("x")
+    ax[0].legend()
+
+    ax[1].plot(time, state_current_plot[2, :], label='Actual')
+    ax[1].plot(time, state_desired_plot[2, :], label='Desired')
+    ax[1].set_title("y")
+    ax[1].legend()
+
+    ax[2].plot(time, state_current_plot[3, :], label='Actual')
+    ax[2].plot(time, state_desired_plot[3, :], label='Desired')
+    ax[2].set_title("z")
+    ax[2].legend()
 
     # Outputting position plots
     fig, ax = plt.subplots(3, 1)
@@ -111,7 +131,7 @@ def run_simulation():
 
     ax[2].plot(time, state_current_plot[6, :], label='Actual')
     ax[2].plot(time, state_desired_plot[6, :], label='Desired')
-    ax[2].set_title("x")
+    ax[2].set_title("z")
     ax[2].legend()
 
     plt.show()
