@@ -7,6 +7,7 @@ def rotational_dynamics(t, omega, torque, params):
 
     return omega_dot
 
+
 def quadrotor_dynamics(t, x, omega, acc, params):
     q = x[0:4]
     v = x[7:10]
@@ -26,8 +27,13 @@ def quadrotor_dynamics(t, x, omega, acc, params):
     # Accelerometer biases
     b_a_dot = np.zeros(3)
 
-
     # Gyroscope biases
     b_w_dot = np.zeros(3)
 
     return np.concatenate((q_dot, r_dot, v_dot, b_a_dot, b_w_dot))
+
+
+def motor_dynamics(t, rpm, rpm_desired, params):
+     km = params["motor_constant"]
+
+     return km * (rpm_desired - rpm)
