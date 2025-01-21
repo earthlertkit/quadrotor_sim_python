@@ -16,7 +16,7 @@ class Gyroscope:
             (0.0, self.dt),
             self.omega,
             args=(torque, params),
-            t_eval=np.linspace(0.0, self.dt, 10),
+            t_eval=[self.dt],
             method="RK45"
         )
 
