@@ -39,5 +39,8 @@ class P2:
 
         R = np.array([x_b, y_b, z_b])
         
-        return qt.rot2quat(R)
+        q_desired = qt.rot2quat(R)
+        q_desired /= np.linalg.norm(q_desired)
+        
+        return q_desired
 
