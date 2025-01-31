@@ -37,8 +37,8 @@ def run_simulation():
     Kp = np.array([1, 1, 5])
     Ki = np.array([0, 0, 0])
     Kd = np.array([1, 1, 4])
-    Kq = 0.0001
-    Kw = 0.0001
+    Kq = 20
+    Kw = 4
 
     # Initializing sensors
     accelerometer = sensor_data.Accelerometer(-quadrotor_params["gravity"])
@@ -53,12 +53,8 @@ def run_simulation():
 
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
-                         [0, 0, 10, 0],
-                         [10, 0, 10, 0],
-                         [10, 10, 10, 0],
-                         [10, 10, 10, np.pi],
-                         [0, 0, 0, 0]]).T
-    waypoint_times = np.array([0, 5, 10, 15, 20, 25])
+                         [0, 10, 0, 0]]).T
+    waypoint_times = np.array([0, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
     # Plotting variables
