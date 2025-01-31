@@ -25,6 +25,6 @@ class PID:
         acc = np.array([x_acc, y_acc, z_acc])
 
         # Thrust required
-        T = params["mass"] * (acc[2] - params["gravity"][2])
+        T = params["mass"] * np.linalg.norm(acc - params["gravity"])
         
         return T, acc
