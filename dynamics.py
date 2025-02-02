@@ -1,39 +1,75 @@
 import numpy as np
+from scipy.integrate import solve_ivp
 import quaternion_math as qt
 
-def rotational_dynamics(t, omega, torque, params):
-    I = params["moment_of_inertia"]
-    omega_dot = np.linalg.solve(I, torque - np.cross(omega, I @ omega))
+class Quadrotor:
+    def __init__(self, state_init, params, dt):
 
-    return omega_dot
+        self.state = state_init
+        self.params = params
+        self.dt = dt
+        self.thrust = 0
+        self.torque = np.zeros(3)
+
+    
+    def quadrotor_dynamics(self, t, x):
+
+        g = self.params["gravity"]
+        I = self.params["moment_of_inertia"]
+        
+
+        v = x[3:6]
+        q = x[6:10]
+        w = x[10:13]
+
+        r_dot = v
+        v_dot = qt.quat2rot(q).T @ np.array([0, 0, self.thrust]) + g
+        q_dot = 0.5 * np.array([[0, -w[0], -w[1], -w[2]],
+                            [w[0], 0, w[2], -w[1]],
+                            [w[1], -w[2], 0, w[0]],
+                            [w[2], w[1], -w[0], 0]]) @ q
+        w_dot = np.linalg.solve(I, self.torque - np.cross(w, I @ w))
+
+        return np.array([*r_dot, *v_dot, *q_dot, *w_dot])
+    
+
+    def update(self):
+        
+        # Quadrotor dynamics solver
+        solution = solve_ivp(
+            self.quadrotor_dynamics,
+            (0.0, self.dt),
+            self.state,
+            t_eval=[self.dt],
+            method="RK45"
+        )
+
+        # Update
+        self.state = solution.y[:, -1]
+        self.state[6:10] /= np.linalg.norm(self.state[6:10])
 
 
-def quadrotor_dynamics(t, x, omega, acc, params):
-    q = x[0:4]
-    v = x[7:10]
+    def get_IMU_data(self):
 
-    # Quaternions
-    q_dot = 0.5 * np.array([[0, -omega[0], -omega[1], -omega[2]],
-                            [omega[0], 0, omega[2], -omega[1]],
-                            [omega[1], -omega[2], 0, omega[0]],
-                            [omega[2], omega[1], -omega[0], 0]]) @ q
+        # Simulate dynamics
+        x_dot = self.quadrotor_dynamics(None, self.state)
 
-    # Positions
-    r_dot = v
+        # Accelerometer data
+        a_IMU = qt.quat2rot(self.state[6:10]) @ (x_dot[3:6] - self.params["gravity"])
+        
+        # Gyro data
+        w_IMU = self.state[10:13]
 
-    # Velocities
-    v_dot = qt.quat2rot(q).T @ acc + params["gravity"]
-
-    # Accelerometer biases
-    b_a_dot = np.zeros(3)
-
-    # Gyroscope biases
-    b_w_dot = np.zeros(3)
-
-    return np.concatenate((q_dot, r_dot, v_dot, b_a_dot, b_w_dot))
+        return a_IMU, w_IMU
 
 
-def motor_dynamics(t, rpm, rpm_desired, params):
-     km = params["motor_constant"]
+    def get_state(self):
+        return self.state
+    
 
-     return km * (rpm_desired - rpm)
+    def set_thrust(self, thrust):
+        self.thrust = thrust
+
+    
+    def set_torque(self, torque):
+        self.torque = torque
