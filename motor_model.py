@@ -3,16 +3,19 @@ from scipy.integrate import solve_ivp
 import dynamics
 
 class Motor:
-    def __init__(self):
+    def __init__(self, params):
+
         self.rpm = np.zeros(4)
         self.rpm_desired = np.zeros(4)
+        self.params = params
 
-    def control(self, thrust, torque, params):
+
+    def control(self, thrust, torque):
         
         # Motor parameters
-        ct = params["thrust_coeff"]
-        cq = params["moment_scale"]
-        l = params["moment_arm_length"]
+        ct = self.params["thrust_coeff"]
+        cq = self.params["moment_scale"]
+        l = self.params["moment_arm_length"]
 
         # RPM limits
         rpm_max = 1000
@@ -40,14 +43,20 @@ class Motor:
         return thrust_motor, torque_motor
 
     
-    def update(self, params, dt):
+    def motor_dynamics(self, t, rpm):
+     
+     km = self.params["motor_constant"]
+
+     return km * (self.rpm_desired - rpm)
+    
+
+    def update(self, dt):
 
         # Rotational dynamics solver
         solution = solve_ivp(
-            dynamics.motor_dynamics,
+            self.motor_dynamics,
             (0.0, dt),
             self.rpm,
-            args=(self.rpm_desired, params),
             t_eval=[dt],
             method="RK45"
         )
