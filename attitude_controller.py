@@ -12,10 +12,12 @@ class P2:
         # Quaternion error
         q_desired = self.desired_quaternions(state_current, state_desired, params, acc)
         q_current = state_current[6:10]
-        q_error = qt.multiply(q_desired, qt.conjugate(q_current))[1:4]
+        q_error = qt.multiply(q_desired, qt.conjugate(q_current))
+        q_error /= np.linalg.norm(q_error)
+        q_error_vec = q_error[1:4] * np.sign(q_error[0])
 
         # Required torque
-        torque = -self.Kq * q_error - self.Kw * omega
+        torque = -self.Kq * q_error_vec - self.Kw * omega
 
         # New desired state with updated attitudes
         state_desired_new = state_desired.copy()
