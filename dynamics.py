@@ -14,6 +14,7 @@ class Quadrotor:
     
     def quadrotor_dynamics(self, t, x):
 
+        m = self.params["mass"]
         g = self.params["gravity"]
         I = self.params["moment_of_inertia"]
         
@@ -23,7 +24,7 @@ class Quadrotor:
         w = x[10:13]
 
         r_dot = v
-        v_dot = qt.quat2rot(q).T @ np.array([0, 0, self.thrust]) + g
+        v_dot = qt.quat2rot(q).T @ np.array([0, 0, self.thrust / m]) + g
         q_dot = 0.5 * np.array([[0, -w[0], -w[1], -w[2]],
                             [w[0], 0, w[2], -w[1]],
                             [w[1], -w[2], 0, w[0]],
