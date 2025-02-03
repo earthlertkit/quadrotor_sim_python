@@ -7,6 +7,7 @@ import attitude_controller
 import dynamics
 import motor_model
 import plotter
+import quaternion_math as qt
 
 def run_simulation():
 
@@ -34,8 +35,8 @@ def run_simulation():
     Kp = np.array([1, 1, 1]) 
     Ki = np.array([0, 0, 0])
     Kd = np.array([1, 1, 1])
-    Kq = 10
-    Kw = 2
+    Kq = 1
+    Kw = 0.1
 
     # Initializing quadrotor
     quadrotor = dynamics.Quadrotor(state_current, quadrotor_params, dt/10)
@@ -48,7 +49,7 @@ def run_simulation():
 
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
-                         [0, 0, 1, 0]]).T
+                         [1, 0, 0, 0]]).T
     waypoint_times = np.array([0, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
@@ -62,6 +63,7 @@ def run_simulation():
 
     # Control loop
     for i in range(path_desired.shape[1]):
+        print(i)
         
         # Get sensor data
         state_current = quadrotor.get_state()
