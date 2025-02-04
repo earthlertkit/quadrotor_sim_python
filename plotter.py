@@ -31,18 +31,18 @@ def orientation_plot(t, q_actual, q_desired):
 
     fig, ax = plt.subplots(3, 1)
 
-    ax[0].plot(t, angles_current_plot[0, :], label='Actual')
-    ax[0].plot(t, angles_desired_plot[0, :], label='Desired')
+    ax[0].plot(t, angles_current_plot[0], label='Actual')
+    ax[0].plot(t, angles_desired_plot[0], label='Desired')
     ax[0].set_title("roll")
     ax[0].legend()
 
-    ax[1].plot(t, angles_current_plot[1, :], label='Actual')
-    ax[1].plot(t, angles_desired_plot[1, :], label='Desired')
+    ax[1].plot(t, angles_current_plot[1], label='Actual')
+    ax[1].plot(t, angles_desired_plot[1], label='Desired')
     ax[1].set_title("pitch")
     ax[1].legend()
 
-    ax[2].plot(t, angles_current_plot[2, :], label='Actual')
-    ax[2].plot(t, angles_desired_plot[2, :], label='Desired')
+    ax[2].plot(t, angles_current_plot[2], label='Actual')
+    ax[2].plot(t, angles_desired_plot[2], label='Desired')
     ax[2].set_title("yaw")
     ax[2].legend()
 
@@ -73,17 +73,25 @@ def accelerometer_plot(t, acc):
     ax[2].set_title("acceleration in z")
 
 
-def motor_plot(t, rpm):
+def motor_plot(t, rpm_current, rpm_desired):
     fig, ax = plt.subplots(4, 1)
 
-    ax[0].plot(t, rpm[0])
+    ax[0].plot(t, rpm_current[0], label="Actual")
+    ax[0].plot(t, rpm_desired[0], label="Desired")
     ax[0].set_title("motor 1 rpm")
+    ax[0].legend()
 
-    ax[1].plot(t, rpm[1])
+    ax[1].plot(t, rpm_current[1], label="Actual")
+    ax[1].plot(t, rpm_desired[1], label="Desired")
     ax[1].set_title("motor 2 rpm")
+    ax[1].legend()
 
-    ax[2].plot(t, rpm[2])
+    ax[2].plot(t, rpm_current[2], label="Actual")
+    ax[2].plot(t, rpm_desired[2], label="Desired")
     ax[2].set_title("motor 3 rpm")
+    ax[2].legend()
 
-    ax[3].plot(t, rpm[3])
+    ax[3].plot(t, rpm_current[3], label="Actual")
+    ax[3].plot(t, rpm_desired[3], label="Desired")
     ax[3].set_title("motor 4 rpm")
+    ax[3].legend()
