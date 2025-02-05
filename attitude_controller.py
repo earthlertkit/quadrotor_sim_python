@@ -9,9 +9,10 @@ class P2:
         self.Kw = Kw 
 
     def control(self, state_current, state_desired, params, acc, omega):
+
         # Quaternion error
-        q_desired = self.desired_quaternions(state_current, state_desired, params, acc)
         q_current = state_current[6:10]
+        q_desired = self.desired_quaternions(state_current, state_desired, params, acc)
         q_error = qt.multiply(q_desired, qt.conjugate(q_current))
         q_error /= np.linalg.norm(q_error)
 
@@ -23,6 +24,7 @@ class P2:
         state_desired_new[6:10] = q_desired
 
         return torque, state_desired_new
+
 
     def desired_quaternions(self, state_current, state_desired, params, acc):
         # Yaw desired
@@ -38,10 +40,8 @@ class P2:
 
         x_b = np.cross(y_b, z_b)
 
-        R = np.array([x_b, y_b, z_b])
-        
+        R = np.array([x_b, y_b, z_b]).T
         q_desired = qt.rot2quat(R)
         q_desired /= np.linalg.norm(q_desired)
         
         return q_desired
-
