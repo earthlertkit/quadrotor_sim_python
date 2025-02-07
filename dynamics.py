@@ -16,19 +16,15 @@ class Quadrotor:
 
         m = self.params["mass"]
         g = self.params["gravity"]
-        I = self.params["moment_of_inertia"]
-        
+        I = self.params["moment_of_inertia"]    
 
         v = x[3:6]
         q = x[6:10]
         w = x[10:13]
 
         r_dot = v
-        v_dot = qt.quat2rot(q).T @ np.array([0, 0, self.thrust / m]) + g
-        q_dot = 0.5 * np.array([[0, -w[0], -w[1], -w[2]],
-                            [w[0], 0, w[2], -w[1]],
-                            [w[1], -w[2], 0, w[0]],
-                            [w[2], w[1], -w[0], 0]]) @ q
+        v_dot = qt.quat2rot(q) @ np.array([0, 0, self.thrust / m]) + g
+        q_dot = -0.5 * qt.multiply(np.array([0, *w]), q)
         w_dot = np.linalg.solve(I, self.torque - np.cross(w, I @ w))
 
         return np.array([*r_dot, *v_dot, *q_dot, *w_dot])
@@ -56,7 +52,7 @@ class Quadrotor:
         x_dot = self.quadrotor_dynamics(None, self.state)
 
         # Accelerometer data
-        a_IMU = qt.quat2rot(self.state[6:10]) @ (x_dot[3:6] - self.params["gravity"])
+        a_IMU = qt.quat2rot(self.state[6:10]).T @ (x_dot[3:6] - self.params["gravity"])
         
         # Gyro data
         w_IMU = self.state[10:13]
