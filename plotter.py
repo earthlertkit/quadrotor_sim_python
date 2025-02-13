@@ -21,6 +21,25 @@ def position_plot(t, r_actual, r_desired):
     ax[2].legend()
 
 
+def velocity_plot(t, v_actual, v_desired):
+    fig, ax = plt.subplots(3, 1)
+
+    ax[0].plot(t, v_actual[0], label='Actual')
+    ax[0].plot(t, v_desired[0], label='Desired')
+    ax[0].set_title("u")
+    ax[0].legend()
+
+    ax[1].plot(t, v_actual[1], label='Actual')
+    ax[1].plot(t, v_desired[1], label='Desired')
+    ax[1].set_title("v")
+    ax[1].legend()
+
+    ax[2].plot(t, v_actual[2], label='Actual')
+    ax[2].plot(t, v_desired[2], label='Desired')
+    ax[2].set_title("w")
+    ax[2].legend()
+
+
 def orientation_plot(t, q_actual, q_desired):
     angles_current_plot = np.zeros((3, len(t)))
     angles_desired_plot = np.zeros((3, len(t)))
