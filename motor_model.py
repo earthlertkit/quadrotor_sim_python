@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.integrate import solve_ivp
-import dynamics
 
 class Motor:
     def __init__(self, params):
@@ -18,16 +17,17 @@ class Motor:
         l = self.params["moment_arm_length"]
 
         # RPM limits
-        rpm_max = 1000
+        rpm_max = 10000
         rpm_min = 0
 
         # Calculating desired RPM to send to motor
         A = np.array([[ct, ct, ct, ct],
                      [0, l*ct, 0, -l*ct],
                      [-l*ct, 0, l*ct, 0],
-                     [-cq, cq, -cq, cq]])
+                     [cq, -cq, cq, -cq]])
         
-        b = np.concatenate(([thrust], torque))
+        b = np.array((thrust, *torque))
+
         self.rpm_desired = np.sqrt(np.maximum(np.linalg.solve(A, b), 0))
 
         # Applying RPM limits
@@ -35,10 +35,9 @@ class Motor:
         self.rpm_desired = np.clip(self.rpm_desired, rpm_min, rpm_max)
 
         # Calculate thrust and torque produced by the motor
-        thrust_motor = ct * np.sum(self.rpm**2)
-        torque_motor = np.array([l*ct*(self.rpm[1]**2 - self.rpm[3]**2),
-                                 l*ct*(self.rpm[2]**2 - self.rpm[0]**2),
-                                 cq*(-self.rpm[0]**2 + self.rpm[1]**2 - self.rpm[2]**2 + self.rpm[3]**2)])
+        u = A @ self.rpm**2
+        thrust_motor = u[0]
+        torque_motor = u[1:4]
         
         return thrust_motor, torque_motor
 
@@ -66,4 +65,4 @@ class Motor:
 
 
     def get_rpm_data(self):
-        return self.rpm
+        return self.rpm, self.rpm_desired

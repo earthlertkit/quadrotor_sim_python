@@ -23,7 +23,7 @@ def run_simulation():
         "mass": 1e-1,
         "gravity": np.array([0, 0, -9.81]),
         "moment_of_inertia": np.eye(3) * 1e-3,
-        "thrust_coeff": 1e-6,
+        "thrust_coeff": 1e-8,
         "moment_scale": 1e-10,
         "moment_arm_length": 1e-1,
         "motor_constant": 36.5
@@ -32,10 +32,10 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters 
-    Kp = np.array([1, 1, 1]) 
+    Kp = np.array([1, 1, 5]) 
     Ki = np.array([0, 0, 0])
-    Kd = np.array([1, 1, 1])
-    Kq = 1
+    Kd = np.array([1, 1, 4])
+    Kq = 1.5
     Kw = 0.1
 
     # Initializing quadrotor
@@ -49,7 +49,7 @@ def run_simulation():
 
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
-                         [1, 0, 0, 0]]).T
+                         [0, 0, 0, 1]]).T
     waypoint_times = np.array([0, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
@@ -59,12 +59,12 @@ def run_simulation():
     state_desired_plot = np.zeros((13, path_desired.shape[1] * 10))
     acc_IMU_plot = np.zeros((3, path_desired.shape[1] * 10))
     omega_IMU_plot = np.zeros((3, path_desired.shape[1] * 10))
-    rpm_plot = np.zeros((4, path_desired.shape[1] * 10))
+    rpm_current_plot = np.zeros((4, path_desired.shape[1] * 10))
+    rpm_desired_plot = np.zeros((4, path_desired.shape[1] * 10))
 
     # Control loop
     for i in range(path_desired.shape[1]):
-        print(i)
-        
+
         # Get sensor data
         state_current = quadrotor.get_state()
         acc_IMU, omega_IMU = quadrotor.get_IMU_data()
@@ -96,7 +96,9 @@ def run_simulation():
             state_desired_plot[:, 10*i+j] = state_desired
             acc_IMU_plot[:, 10*i+j] = acc_IMU
             omega_IMU_plot[:, 10*i+j] = omega_IMU
-            rpm_plot[:, 10*i+j] = motor.get_rpm_data()
+            rpm_current, rpm_desired = motor.get_rpm_data()
+            rpm_current_plot[:, 10*i+j] = rpm_current
+            rpm_desired_plot[:, 10*i+j] = rpm_desired
 
             # Updates
             motor.update(dt/10)
@@ -106,10 +108,11 @@ def run_simulation():
 
     # Outputting plots
     plotter.position_plot(time, state_current_plot[0:3], state_desired_plot[0:3])
+    plotter.velocity_plot(time, state_current_plot[3:6], state_desired_plot[3:6])
     plotter.orientation_plot(time, state_current_plot[6:10], state_desired_plot[6:10])
     plotter.gyroscope_plot(time, omega_IMU_plot)
     plotter.accelerometer_plot(time, acc_IMU_plot)
-    plotter.motor_plot(time, rpm_plot)
+    plotter.motor_plot(time, rpm_current_plot, rpm_desired_plot)
     plt.show()
 
 if __name__ == "__main__":

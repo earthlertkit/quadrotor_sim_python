@@ -43,5 +43,15 @@ class P2:
         R = np.array([x_b, y_b, z_b]).T
         q_desired = qt.rot2quat(R)
         q_desired /= np.linalg.norm(q_desired)
+
+        # Angle limits
+        limit = np.radians(10)
+        euler_angles = qt.quat2eul(q_desired)
+        euler_angles[0] = np.clip(euler_angles[0], -limit, limit) # Roll
+        euler_angles[1] = np.clip(euler_angles[1], -limit, limit) # Pitch
+        
+        q_desired = qt.eul2quat(euler_angles)
+        q_desired /= np.linalg.norm(q_desired)
+
         
         return q_desired
