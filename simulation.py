@@ -7,7 +7,6 @@ import attitude_controller
 import dynamics
 import motor_model
 import plotter
-import quaternion_math as qt
 
 def run_simulation():
 
@@ -22,7 +21,7 @@ def run_simulation():
     quadrotor_params = {
         "mass": 1e-1,
         "gravity": np.array([0, 0, -9.81]),
-        "moment_of_inertia": np.eye(3) * 1e-3,
+        "moment_of_inertia": np.eye(3) * 1e-4,
         "thrust_coeff": 1e-8,
         "moment_scale": 1e-10,
         "moment_arm_length": 1e-1,
@@ -32,24 +31,24 @@ def run_simulation():
     # Sensor parameters
 
     # Controller parameters 
-    Kp = np.array([1, 1, 5]) 
+    Kp = np.array([5, 5, 5]) 
     Ki = np.array([0, 0, 0])
-    Kd = np.array([1, 1, 4])
-    Kq = 1.5
-    Kw = 0.1
+    Kd = np.array([4, 4, 4])
+    Kq = 0.015
+    Kw = 0.001
 
     # Initializing quadrotor
     quadrotor = dynamics.Quadrotor(state_current, quadrotor_params, dt/10)
 
     # Initializing controllers
     pos_controller = position_controller.PID(Kp, Ki, Kd)
-    att_controller = attitude_controller.P2(Kq, Kw)
+    att_controller = attitude_controller.PD(Kq, Kw)
 
     motor = motor_model.Motor(quadrotor_params)
 
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
-                         [0, 0, 0, 1]]).T
+                         [10, 10, 10, 0]]).T
     waypoint_times = np.array([0, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
@@ -89,7 +88,8 @@ def run_simulation():
                                                 omega=omega_IMU)
             # Motor model
             thrust_motor, torque_motor = motor.control(thrust_req, torque_req)
-
+            print("Motor: ", thrust_motor)
+            print("Actual: ", thrust_req)
             # Plotting
             time.append((i+j/10)*dt)
             state_current_plot[:, 10*i+j] = state_current
