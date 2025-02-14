@@ -18,7 +18,7 @@ class Motor:
 
         # RPM limits
         rpm_max = 10000
-        rpm_min = 0
+        rpm_min = 1000
 
         # Calculating desired RPM to send to motor
         A = np.array([[ct, ct, ct, ct],
