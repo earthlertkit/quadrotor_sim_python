@@ -54,6 +54,7 @@ def run_simulation():
     P = 1e-2*np.eye(16)
     Q = 1e-2*np.eye(16)
     R = 1e-1*np.eye(10)
+    R[0:4, 0:4] = 1e-2*np.eye(4)
     nav_filter = localization.EKF(state_ekf_init, P, Q, R, quadrotor_params, dt)
 
     # Generating path from waypoints [x, y, z, yaw]
