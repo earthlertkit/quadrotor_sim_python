@@ -10,10 +10,10 @@ class PID:
 
     def control(self, state_current, state_desired, dt, params):
         # Proportional (position) error
-        e_p = state_desired[0:3] - state_current[0:3]
+        e_p = state_desired[0:3] - state_current[4:7]
 
         # Derivative (velocity) error
-        e_d = state_desired[3:6] - state_current[3:6]
+        e_d = state_desired[3:6] - state_current[7:10]
 
         # Integral error
         self.e_i += e_p * dt

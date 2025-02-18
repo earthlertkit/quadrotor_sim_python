@@ -10,7 +10,7 @@ class PD:
     def control(self, state_current, state_desired, params, acc, omega):
 
         # Quaternion error
-        q_current = state_current[6:10]
+        q_current = state_current[0:4]
         q_desired = self.desired_quaternions(state_current, state_desired, params, acc)
         q_error = qt.multiply(q_desired, qt.conjugate(q_current))
         q_error /= np.linalg.norm(q_error)
@@ -31,6 +31,11 @@ class PD:
 
         # Computing DCM
         z_b = acc
+        if np.linalg.norm(z_b) > 1e-6:
+            z_b /= np.linalg.norm(z_b)
+        else:
+            z_b = np.array([0, 0, 1])
+
         z_b /= np.linalg.norm(z_b)
 
         x_c = np.array([np.cos(yaw_desired), np.sin(yaw_desired), 0])

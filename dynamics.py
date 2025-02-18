@@ -52,12 +52,24 @@ class Quadrotor:
         x_dot = self.quadrotor_dynamics(None, self.state)
 
         # Accelerometer data
-        a_IMU = qt.quat2rot(self.state[6:10]).T @ (x_dot[3:6] - self.params["gravity"])
+        a_IMU = qt.quat2rot(self.state[6:10]).T @ (x_dot[3:6] - self.params["gravity"]) + np.random.normal(0, 0.01, 3)
         
         # Gyro data
-        w_IMU = self.state[10:13]
+        w_IMU = self.state[10:13] + np.random.normal(0, 0.01, 3)
 
         return a_IMU, w_IMU
+
+    
+    def get_GPS_data(self):
+        return self.state[0:3] + np.random.normal(0, 0.1, 3)
+    
+
+    def get_vel_data(self):
+        return self.state[3:6] + np.random.normal(0, 0.1, 3)
+    
+
+    def get_quat_data(self):
+        return self.state[6:10] + np.random.normal(0, 0.01, 4)
 
 
     def get_state(self):

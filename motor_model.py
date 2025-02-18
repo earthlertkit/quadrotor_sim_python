@@ -24,7 +24,7 @@ class Motor:
         A = np.array([[ct, ct, ct, ct],
                      [0, l*ct, 0, -l*ct],
                      [-l*ct, 0, l*ct, 0],
-                     [cq, -cq, cq, -cq]])
+                     [-cq, cq, -cq, cq]])
         
         b = np.array((thrust, *torque))
 
