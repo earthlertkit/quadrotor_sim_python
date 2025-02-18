@@ -53,13 +53,13 @@ def run_simulation():
     state_ekf_init[0] = 1
     P = 1e-2*np.eye(16)
     Q = 1e-2*np.eye(16)
-    R = 1e-1*np.eye(10)
-    R[0:4, 0:4] = 1e-2*np.eye(4)
+    R = 1e-2*np.eye(10)
+    R[0:4, 0:4] = 1e-4*np.eye(4)
     nav_filter = localization.EKF(state_ekf_init, P, Q, R, quadrotor_params, dt)
 
     # Generating path from waypoints [x, y, z, yaw]
     waypoints = np.array([[0, 0, 0, 0],
-                         [0, 0, 0, 0]]).T
+                         [10, 10, 10, 0]]).T
     waypoint_times = np.array([0, 10])
     path_desired = path_planning.waypoint_discretize(waypoints=waypoints, waypoint_times=waypoint_times, dt=dt)
 
