@@ -2,66 +2,77 @@ import numpy as np
 import matplotlib.pyplot as plt
 import quaternion_math as qt
 
-def position_plot(t, r_actual, r_desired):
+def position_plot(t, r_actual, r_desired, r_ekf):
     fig, ax = plt.subplots(3, 1)
 
     ax[0].plot(t, r_actual[0], label='Actual')
     ax[0].plot(t, r_desired[0], label='Desired')
+    ax[0].plot(t, r_ekf[0], label='EKF')
     ax[0].set_title("x")
     ax[0].legend()
 
     ax[1].plot(t, r_actual[1], label='Actual')
     ax[1].plot(t, r_desired[1], label='Desired')
+    ax[1].plot(t, r_ekf[1], label='EKF')
     ax[1].set_title("y")
     ax[1].legend()
 
     ax[2].plot(t, r_actual[2], label='Actual')
     ax[2].plot(t, r_desired[2], label='Desired')
+    ax[2].plot(t, r_ekf[2], label='EKF')
     ax[2].set_title("z")
     ax[2].legend()
 
 
-def velocity_plot(t, v_actual, v_desired):
+def velocity_plot(t, v_actual, v_desired, v_ekf):
     fig, ax = plt.subplots(3, 1)
 
     ax[0].plot(t, v_actual[0], label='Actual')
     ax[0].plot(t, v_desired[0], label='Desired')
+    ax[0].plot(t, v_ekf[0], label='EKF')
     ax[0].set_title("u")
     ax[0].legend()
 
     ax[1].plot(t, v_actual[1], label='Actual')
     ax[1].plot(t, v_desired[1], label='Desired')
+    ax[1].plot(t, v_ekf[1], label='EKF')
     ax[1].set_title("v")
     ax[1].legend()
 
     ax[2].plot(t, v_actual[2], label='Actual')
     ax[2].plot(t, v_desired[2], label='Desired')
+    ax[2].plot(t, v_ekf[2], label='EKF')
     ax[2].set_title("w")
     ax[2].legend()
 
 
-def orientation_plot(t, q_actual, q_desired):
+def orientation_plot(t, q_actual, q_desired, q_ekf):
     angles_current_plot = np.zeros((3, len(t)))
     angles_desired_plot = np.zeros((3, len(t)))
+    angles_ekf_plot = np.zeros((3, len(t)))
 
     for j in range(len(t)):
         angles_current_plot[:, j] = qt.quat2eul(q_actual[:, j])
         angles_desired_plot[:, j] = qt.quat2eul(q_desired[:, j])
+        angles_ekf_plot[:, j] = qt.quat2eul(q_ekf[:, j])
 
     fig, ax = plt.subplots(3, 1)
 
     ax[0].plot(t, angles_current_plot[0], label='Actual')
     ax[0].plot(t, angles_desired_plot[0], label='Desired')
+    ax[0].plot(t, angles_ekf_plot[0], label='EKF')
     ax[0].set_title("roll")
     ax[0].legend()
 
     ax[1].plot(t, angles_current_plot[1], label='Actual')
     ax[1].plot(t, angles_desired_plot[1], label='Desired')
+    ax[1].plot(t, angles_ekf_plot[1], label='EKF')
     ax[1].set_title("pitch")
     ax[1].legend()
 
     ax[2].plot(t, angles_current_plot[2], label='Actual')
     ax[2].plot(t, angles_desired_plot[2], label='Desired')
+    ax[2].plot(t, angles_ekf_plot[2], label='EKF')
     ax[2].set_title("yaw")
     ax[2].legend()
 
