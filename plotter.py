@@ -8,20 +8,26 @@ def position_plot(t, r_actual, r_desired, r_ekf):
     ax[0].plot(t, r_actual[0], label='Actual')
     ax[0].plot(t, r_desired[0], label='Desired')
     ax[0].plot(t, r_ekf[0], label='EKF')
-    ax[0].set_title("x")
+    ax[0].set_ylabel("x (m)")
+    ax[0].set_xlabel("t (s)")
     ax[0].legend()
+    ax[0].legend(loc='lower right')
 
     ax[1].plot(t, r_actual[1], label='Actual')
     ax[1].plot(t, r_desired[1], label='Desired')
     ax[1].plot(t, r_ekf[1], label='EKF')
-    ax[1].set_title("y")
+    ax[1].set_ylabel("y (m)")
+    ax[1].set_xlabel("t (s)")
     ax[1].legend()
+    ax[1].legend(loc='lower right')
 
     ax[2].plot(t, r_actual[2], label='Actual')
     ax[2].plot(t, r_desired[2], label='Desired')
     ax[2].plot(t, r_ekf[2], label='EKF')
-    ax[2].set_title("z")
+    ax[2].set_ylabel("z (m)")
+    ax[2].set_xlabel("t (s)")
     ax[2].legend()
+    ax[2].legend(loc='lower right')
 
 
 def velocity_plot(t, v_actual, v_desired, v_ekf):
@@ -61,20 +67,26 @@ def orientation_plot(t, q_actual, q_desired, q_ekf):
     ax[0].plot(t, angles_current_plot[0], label='Actual')
     ax[0].plot(t, angles_desired_plot[0], label='Desired')
     ax[0].plot(t, angles_ekf_plot[0], label='EKF')
-    ax[0].set_title("roll")
+    ax[0].set_ylabel("roll (rad)")
+    ax[0].set_xlabel("t (s)")
     ax[0].legend()
+    ax[0].legend(loc='lower right')
 
     ax[1].plot(t, angles_current_plot[1], label='Actual')
     ax[1].plot(t, angles_desired_plot[1], label='Desired')
     ax[1].plot(t, angles_ekf_plot[1], label='EKF')
-    ax[1].set_title("pitch")
+    ax[1].set_ylabel("pitch (rad)")
+    ax[1].set_xlabel("t (s)")
     ax[1].legend()
+    ax[1].legend(loc='lower right')
 
     ax[2].plot(t, angles_current_plot[2], label='Actual')
     ax[2].plot(t, angles_desired_plot[2], label='Desired')
     ax[2].plot(t, angles_ekf_plot[2], label='EKF')
-    ax[2].set_title("yaw")
+    ax[2].set_ylabel("yaw (rad)")
+    ax[2].set_xlabel("t (s)")
     ax[2].legend()
+    ax[2].legend(loc='lower right')
 
 
 def gyroscope_plot(t, omega):
